@@ -1,5 +1,5 @@
 services:
-  # Database PostgreSQL
+  # 1. Database PostgreSQL
   postgres-db:
     image: postgres:16-alpine
     container_name: stockify_postgres
@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # Backend .NET 10 Web API
+  # 2. Backend ASP.NET Core API (.NET 10)
   api:
     build:
       context: .
@@ -31,6 +31,17 @@ services:
     ports:
       - "5000:8080"
 
+  # 3. Frontend Web App (React + Vite + Nginx)
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: stockify_web
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
 volumes:
   postgres_data:
-
