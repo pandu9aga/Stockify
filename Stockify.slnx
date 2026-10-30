@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/Stockify.Api/Stockify.Api.csproj" />
+  </Folder>
+</Solution>

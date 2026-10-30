@@ -1,0 +1,36 @@
+services:
+  # Database PostgreSQL
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: stockify_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: stockify_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Backend .NET 10 Web API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stockify_api
+    restart: always
+    depends_on:
+      - postgres-db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres-db;Port=5432;Database=stockify_db;Username=postgres;Password=postgrespassword
+      - Jwt__Key=StockifySuperSecretDevelopmentKey1234567890!@#$%
+      - Jwt__Issuer=StockifyApi
+      - Jwt__Audience=StockifyClient
+    ports:
+      - "5000:8080"
+
+volumes:
+  postgres_data:
+
