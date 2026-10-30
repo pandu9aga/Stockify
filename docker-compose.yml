@@ -13,7 +13,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # 2. Backend ASP.NET Core API (.NET 10)
+  # 2. Database GUI Web (Seperti phpMyAdmin tapi untuk PostgreSQL)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: stockify_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@stockify.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres-db
+
+  # 3. Backend ASP.NET Core API (.NET 10)
   api:
     build:
       context: .
@@ -31,7 +44,7 @@ services:
     ports:
       - "5000:8080"
 
-  # 3. Frontend Web App (React + Vite + Nginx)
+  # 4. Frontend Web App (React + Vite + Nginx)
   web:
     build:
       context: ./frontend
