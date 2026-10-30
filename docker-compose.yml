@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # 2. Database GUI Web (Seperti phpMyAdmin tapi untuk PostgreSQL)
+  # 2. Database GUI Web
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: stockify_pgadmin
@@ -26,7 +26,17 @@ services:
     depends_on:
       - postgres-db
 
-  # 3. Backend ASP.NET Core API (.NET 10)
+  # 3. AI / ML Microservice (PyTorch + FastAPI)
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    container_name: stockify_ml
+    restart: always
+    ports:
+      - "8000:8000"
+
+  # 4. Backend ASP.NET Core API (.NET 10)
   api:
     build:
       context: .
@@ -35,16 +45,18 @@ services:
     restart: always
     depends_on:
       - postgres-db
+      - ml-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres-db;Port=5432;Database=stockify_db;Username=postgres;Password=postgrespassword
       - Jwt__Key=StockifySuperSecretDevelopmentKey1234567890!@#$%
       - Jwt__Issuer=StockifyApi
       - Jwt__Audience=StockifyClient
+      - MlService__BaseUrl=http://ml-service:8000
     ports:
       - "5000:8080"
 
-  # 4. Frontend Web App (React + Vite + Nginx)
+  # 5. Frontend Web App (React + Vite + Nginx)
   web:
     build:
       context: ./frontend
