@@ -1,0 +1,104 @@
+<Window x:Class="Stockify.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stockify Desktop - Warehouse POS and Counter" Height="700" Width="1050"
+        WindowStartupLocation="CenterScreen" Background="#0f172a">
+    
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#f8fafc"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#020617"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#0284c7"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#1e293b" CornerRadius="12" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="📦 Stockify Counter POS" FontSize="20" FontWeight="Bold" Foreground="#38bdf8"/>
+                    <TextBlock Text="Fast Warehouse Terminal &amp; Barcode Entry (Windows Native .NET 10)" FontSize="12" Foreground="#94a3b8" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtStatus" Text="Connected to API (localhost:5000)" Foreground="#34d399" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <Button Content="🔄 Refresh [F5]" Click="BtnRefresh_Click" Background="#334155" Padding="10,6"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Quick Action Barcode Input & Hotkeys -->
+        <Border Grid.Row="1" Background="#1e293b" CornerRadius="12" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="SCAN SKU / BARCODE:" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                <TextBox Grid.Column="1" x:Name="TxtBarcode" KeyDown="TxtBarcode_KeyDown" Margin="0,0,12,0"/>
+                <Button Grid.Column="2" Content="+ Stock In [F1]" Click="BtnStockIn_Click" Background="#059669" Margin="0,0,8,0"/>
+                <Button Grid.Column="3" Content="- Stock Out [F2]" Click="BtnStockOut_Click" Background="#d97706"/>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid Products -->
+        <Border Grid.Row="2" Background="#1e293b" CornerRadius="12" Padding="12">
+            <DataGrid x:Name="DgProducts" AutoGenerateColumns="False" IsReadOnly="True"
+                      Background="#0f172a" RowBackground="#0f172a" AlternatingRowBackground="#1e293b"
+                      Foreground="#ffffff" BorderThickness="0" GridLinesVisibility="Horizontal"
+                      HorizontalGridLinesBrush="#334155" HeadersVisibility="Column" SelectionMode="Single">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#1e293b"/>
+                        <Setter Property="Foreground" Value="#94a3b8"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Padding" Value="10,8"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        <Setter Property="BorderBrush" Value="#334155"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                    <DataGridTextColumn Header="SKU" Binding="{Binding Sku}" Width="150"/>
+                    <DataGridTextColumn Header="Nama Barang" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Kategori" Binding="{Binding CategoryName}" Width="140"/>
+                    <DataGridTextColumn Header="Harga Unit" Binding="{Binding PriceFormatted}" Width="140"/>
+                    <DataGridTextColumn Header="Sisa Stok" Binding="{Binding StockQuantity}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Footer / Keyboard Shortcut Guide -->
+        <Border Grid.Row="3" Margin="0,12,0,0">
+            <TextBlock Text="Petunjuk Keyboard: Tekan [F5] untuk Reload | Ketik SKU lalu Enter untuk pencarian cepat | [F1] Mutasi Masuk | [F2] Mutasi Keluar" 
+                       Foreground="#64748b" FontSize="11" HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>
